@@ -62,11 +62,13 @@ export const analyzeResume = async (userId: string, resumeText: string, jobDescr
     throw new AppError('Empty Groq response', 502);
   }
 
+  let parsed: unknown;
   try {
-    const parsed = JSON.parse(content);
-    await consumeAiQuota(userId);
-    return parsed;
+    parsed = JSON.parse(content);
   } catch (error) {
     throw new AppError('Failed to parse Groq response', 502, error);
   }
+
+  await consumeAiQuota(userId);
+  return parsed;
 };

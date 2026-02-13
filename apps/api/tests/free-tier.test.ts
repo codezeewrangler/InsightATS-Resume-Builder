@@ -139,38 +139,36 @@ describe('free-tier quotas', () => {
 
     const token = await registerAndLogin(`ai-limit-${Date.now()}@example.com`);
 
-    const fetchMock = vi
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve(
-          new Response(
-            JSON.stringify({
-              choices: [
-                {
-                  message: {
-                    content: JSON.stringify({
-                      atsScore: 80,
-                      keywordMatchScore: 79,
-                      formatQualityScore: 78,
-                      impactScore: 77,
-                      detectedSkills: [],
-                      missingSkills: [],
-                      foundKeywords: [],
-                      missingKeywords: [],
-                      atsIssues: [],
-                      improvementSuggestions: [],
-                    }),
-                  },
+    const analysisPayload = {
+      atsScore: 80,
+      keywordMatchScore: 79,
+      formatQualityScore: 78,
+      impactScore: 77,
+      detectedSkills: [],
+      missingSkills: [],
+      foundKeywords: [],
+      missingKeywords: [],
+      atsIssues: [],
+      improvementSuggestions: [],
+    };
+
+    const fetchMock = vi.fn().mockImplementation(
+      () =>
+        Promise.resolve({
+          ok: true,
+          status: 200,
+          json: async () => ({
+            choices: [
+              {
+                message: {
+                  content: JSON.stringify(analysisPayload),
                 },
-              ],
-            }),
-            {
-              status: 200,
-              headers: { 'Content-Type': 'application/json' },
-            },
-          ),
-        ),
-      );
+              },
+            ],
+          }),
+          text: async () => JSON.stringify({}),
+        }) as Promise<Response>,
+    );
 
     vi.stubGlobal('fetch', fetchMock);
 
