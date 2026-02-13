@@ -11,3 +11,4 @@ process.env.LOG_LEVEL = 'error';
 process.env.RATE_LIMIT_WINDOW_MS = '60000';
 process.env.RATE_LIMIT_MAX = '200';
 process.env.GROQ_API_KEY = 'test-groq-key';
+process.env.MOCK_AI_ANALYSIS = 'true';

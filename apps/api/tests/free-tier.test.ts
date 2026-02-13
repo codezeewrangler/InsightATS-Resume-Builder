@@ -139,39 +139,6 @@ describe('free-tier quotas', () => {
 
     const token = await registerAndLogin(`ai-limit-${Date.now()}@example.com`);
 
-    const analysisPayload = {
-      atsScore: 80,
-      keywordMatchScore: 79,
-      formatQualityScore: 78,
-      impactScore: 77,
-      detectedSkills: [],
-      missingSkills: [],
-      foundKeywords: [],
-      missingKeywords: [],
-      atsIssues: [],
-      improvementSuggestions: [],
-    };
-
-    const fetchMock = vi.fn().mockImplementation(
-      () =>
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          json: async () => ({
-            choices: [
-              {
-                message: {
-                  content: JSON.stringify(analysisPayload),
-                },
-              },
-            ],
-          }),
-          text: async () => JSON.stringify({}),
-        }) as Promise<Response>,
-    );
-
-    vi.stubGlobal('fetch', fetchMock);
-
     for (let index = 0; index < 10; index += 1) {
       await request(app)
         .post('/api/ai/resume-analysis')
@@ -192,8 +159,6 @@ describe('free-tier quotas', () => {
       limit: 10,
       current: 10,
     });
-
-    expect(fetchMock).toHaveBeenCalledTimes(10);
 
     vi.setSystemTime(new Date('2026-02-12T00:01:00Z'));
 

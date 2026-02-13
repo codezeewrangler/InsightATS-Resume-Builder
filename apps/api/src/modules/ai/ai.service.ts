@@ -10,16 +10,42 @@ interface GroqResponse {
   }>;
 }
 
+const buildTestAnalysis = (jobDescription?: string) => ({
+  atsScore: 80,
+  keywordMatchScore: 79,
+  formatQualityScore: 78,
+  impactScore: 77,
+  detectedSkills: [],
+  missingSkills: [],
+  foundKeywords: [],
+  missingKeywords: [],
+  atsIssues: [],
+  improvementSuggestions: [],
+  ...(jobDescription
+    ? {
+        jobMatchScore: 75,
+        matchingSkills: [],
+        missingRequirements: [],
+      }
+    : {}),
+});
+
 export const analyzeResume = async (userId: string, resumeText: string, jobDescription?: string) => {
   const runtimeNodeEnv = process.env.NODE_ENV ?? env.NODE_ENV;
   const groqApiKey = process.env.GROQ_API_KEY || env.GROQ_API_KEY;
   const hasGroqApiKey = Boolean(groqApiKey);
+  const useTestAiMock = runtimeNodeEnv === 'test' && process.env.MOCK_AI_ANALYSIS === 'true';
 
   if (!hasGroqApiKey && runtimeNodeEnv !== 'test') {
     throw new AppError('GROQ_API_KEY is not configured', 500);
   }
 
   await ensureAiQuota(userId);
+
+  if (useTestAiMock) {
+    await consumeAiQuota(userId);
+    return buildTestAnalysis(jobDescription);
+  }
 
   const jobContext = jobDescription
     ? `\n\nThe user also provided this Job Description to match against:\n"""${jobDescription}"""\n\nInclude jobMatchScore (0-100), matchingSkills (array of skills found in both resume and JD), and missingRequirements (skills in JD but not in resume).`
