@@ -134,7 +134,7 @@ describe('free-tier quotas', () => {
   });
 
   it('blocks 11th AI analysis in a UTC day and resets quota next day', async () => {
-    vi.useFakeTimers();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     vi.setSystemTime(new Date('2026-02-11T09:00:00Z'));
 
     const token = await registerAndLogin(`ai-limit-${Date.now()}@example.com`);
