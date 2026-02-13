@@ -2,7 +2,8 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 ENV DATABASE_URL=postgresql://resume:resume_dev@localhost:5432/resume_dev
 COPY apps/api/package*.json ./
-RUN npm install
+COPY apps/api/prisma ./prisma
+RUN npm ci
 
 FROM node:20-alpine AS dev
 WORKDIR /app
