@@ -14,7 +14,9 @@ jobs:
         with:
           node-version: "20"
       - name: Install deps
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
       - name: Generate Prisma client
         run: npx prisma generate
         working-directory: apps/api
@@ -49,7 +51,9 @@ jobs:
         with:
           node-version: "20"
       - name: Install deps
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
       - name: Generate Prisma client
         run: npx prisma generate
         working-directory: apps/api
@@ -76,7 +80,9 @@ jobs:
         with:
           node-version: "20"
       - name: Install deps
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
       - name: Build API
         run: npm run build
         working-directory: apps/api
