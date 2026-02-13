@@ -10,8 +10,7 @@
     "test": "prisma generate && vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "prisma db seed",
-    "postinstall": "prisma generate"
+    "prisma:seed": "prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
