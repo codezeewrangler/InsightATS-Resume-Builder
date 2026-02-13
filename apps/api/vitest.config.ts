@@ -9,8 +9,5 @@ export default defineConfig({
     sequence: {
       concurrent: false,
     },
-    fakeTimers: {
-      shouldAdvanceTime: true,
-    },
   },
 });
