@@ -81,7 +81,7 @@ export function SettingsPage({
                   </label>
                   <input
                     type="text"
-                    defaultValue="John"
+                    placeholder="Enter first name"
                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
                       darkMode
                         ? 'bg-slate-700/50 border-slate-600 text-slate-100 focus:ring-indigo-500 placeholder-slate-400'
@@ -97,7 +97,7 @@ export function SettingsPage({
                   </label>
                   <input
                     type="text"
-                    defaultValue="Doe"
+                    placeholder="Enter last name"
                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
                       darkMode
                         ? 'bg-slate-700/50 border-slate-600 text-slate-100 focus:ring-indigo-500 placeholder-slate-400'
@@ -119,7 +119,7 @@ export function SettingsPage({
                   }`} />
                   <input
                     type="email"
-                    defaultValue="john.doe@example.com"
+                    placeholder="you@example.com"
                     className={`w-full pl-11 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
                       darkMode
                         ? 'bg-slate-700/50 border-slate-600 text-slate-100 focus:ring-indigo-500 placeholder-slate-400'
@@ -141,7 +141,7 @@ export function SettingsPage({
                   }`} />
                   <input
                     type="text"
-                    defaultValue="Tech Innovations Inc."
+                    placeholder="Your company name"
                     className={`w-full pl-11 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
                       darkMode
                         ? 'bg-slate-700/50 border-slate-600 text-slate-100 focus:ring-indigo-500 placeholder-slate-400'
