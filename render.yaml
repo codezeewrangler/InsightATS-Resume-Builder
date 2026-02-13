@@ -1,0 +1,38 @@
+services:
+  # ── API (Express + Prisma) ──
+  - type: web
+    name: resume-api
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: cd apps/api && npm install && npx prisma generate && npx prisma migrate deploy && npm run build
+    startCommand: cd apps/api && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false  # Set manually in Render dashboard (your Supabase URL)
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false  # Set manually if using AI analysis
+      - key: CORS_ORIGIN
+        sync: false  # Set to your Render web URL after deployment
+
+  # ── Web (Vite Static Site) ──
+  - type: web
+    name: resume-web
+    runtime: static
+    region: oregon
+    plan: free
+    buildCommand: cd apps/web && npm install && npm run build
+    staticPublishPath: apps/web/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false  # Set to your Render API URL, e.g. https://resume-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
