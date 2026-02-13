@@ -13,16 +13,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install deps
-        run: npm ci --ignore-scripts
+      - name: Install root deps
+        run: npm ci
       - name: Generate Prisma client
         run: npx prisma generate
         working-directory: apps/api
       - name: Lint API
-        run: npm run lint --max-warnings 0 || true
+        run: npx eslint . --ext .ts --max-warnings -1
         working-directory: apps/api
       - name: Lint Web
-        run: npm run lint --max-warnings 0 || true
+        run: npx eslint . --ext ts,tsx --max-warnings -1
         working-directory: apps/web
 
   test:
@@ -46,8 +46,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install deps
-        run: npm ci --ignore-scripts
+      - name: Install root deps
+        run: npm ci
       - name: Generate Prisma client
         run: npx prisma generate
         working-directory: apps/api
@@ -74,8 +74,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install deps
-        run: npm ci --ignore-scripts
+      - name: Install root deps
+        run: npm ci
       - name: Generate Prisma client
         run: npx prisma generate
         working-directory: apps/api
