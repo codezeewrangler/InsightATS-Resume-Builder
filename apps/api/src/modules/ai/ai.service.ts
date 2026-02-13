@@ -11,9 +11,11 @@ interface GroqResponse {
 }
 
 export const analyzeResume = async (userId: string, resumeText: string, jobDescription?: string) => {
-  const hasGroqApiKey = Boolean(env.GROQ_API_KEY);
+  const runtimeNodeEnv = process.env.NODE_ENV ?? env.NODE_ENV;
+  const groqApiKey = process.env.GROQ_API_KEY || env.GROQ_API_KEY;
+  const hasGroqApiKey = Boolean(groqApiKey);
 
-  if (!hasGroqApiKey && env.NODE_ENV !== 'test') {
+  if (!hasGroqApiKey && runtimeNodeEnv !== 'test') {
     throw new AppError('GROQ_API_KEY is not configured', 500);
   }
 
@@ -32,7 +34,7 @@ export const analyzeResume = async (userId: string, resumeText: string, jobDescr
   };
 
   if (hasGroqApiKey) {
-    headers.Authorization = `Bearer ${env.GROQ_API_KEY}`;
+    headers.Authorization = `Bearer ${groqApiKey}`;
   }
 
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
