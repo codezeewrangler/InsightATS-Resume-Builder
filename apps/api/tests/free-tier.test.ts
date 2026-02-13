@@ -141,32 +141,34 @@ describe('free-tier quotas', () => {
 
     const fetchMock = vi
       .fn()
-      .mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            choices: [
-              {
-                message: {
-                  content: JSON.stringify({
-                    atsScore: 80,
-                    keywordMatchScore: 79,
-                    formatQualityScore: 78,
-                    impactScore: 77,
-                    detectedSkills: [],
-                    missingSkills: [],
-                    foundKeywords: [],
-                    missingKeywords: [],
-                    atsIssues: [],
-                    improvementSuggestions: [],
-                  }),
+      .mockImplementation(() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              choices: [
+                {
+                  message: {
+                    content: JSON.stringify({
+                      atsScore: 80,
+                      keywordMatchScore: 79,
+                      formatQualityScore: 78,
+                      impactScore: 77,
+                      detectedSkills: [],
+                      missingSkills: [],
+                      foundKeywords: [],
+                      missingKeywords: [],
+                      atsIssues: [],
+                      improvementSuggestions: [],
+                    }),
+                  },
                 },
-              },
-            ],
-          }),
-          {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          },
+              ],
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
         ),
       );
 
