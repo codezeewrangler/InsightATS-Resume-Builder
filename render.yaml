@@ -25,7 +25,6 @@ services:
   - type: web
     name: resume-web
     runtime: static
-    region: oregon
     plan: free
     buildCommand: cd apps/web && npm install && npm run build
     staticPublishPath: apps/web/dist
