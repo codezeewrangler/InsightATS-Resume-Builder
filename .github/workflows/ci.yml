@@ -16,6 +16,8 @@ jobs:
       - name: Install API deps
         run: npm install
         working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
       - name: Lint API
         run: npm run lint
         working-directory: apps/api
@@ -50,6 +52,8 @@ jobs:
       - name: Install API deps
         run: npm install
         working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
       - name: Run migrations
         run: npx prisma migrate deploy
         working-directory: apps/api
@@ -76,9 +80,13 @@ jobs:
       - name: Install API deps
         run: npm install
         working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
       - name: Build API
         run: npm run build
         working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
       - name: Install Web deps
         run: npm install
         working-directory: apps/web
