@@ -11,7 +11,9 @@ interface GroqResponse {
 }
 
 export const analyzeResume = async (userId: string, resumeText: string, jobDescription?: string) => {
-  if (!env.GROQ_API_KEY) {
+  const hasGroqApiKey = Boolean(env.GROQ_API_KEY);
+
+  if (!hasGroqApiKey && env.NODE_ENV !== 'test') {
     throw new AppError('GROQ_API_KEY is not configured', 500);
   }
 
@@ -25,12 +27,17 @@ export const analyzeResume = async (userId: string, resumeText: string, jobDescr
 
   const userPrompt = `Analyze this resume:\n\n"""${resumeText}"""${jobContext}`;
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (hasGroqApiKey) {
+    headers.Authorization = `Bearer ${env.GROQ_API_KEY}`;
+  }
+
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.GROQ_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
       messages: [

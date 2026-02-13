@@ -135,7 +135,7 @@ describe('free-tier quotas', () => {
 
   it('blocks 11th AI analysis in a UTC day and resets quota next day', async () => {
     vi.useFakeTimers({ toFake: ['Date'] });
-    vi.setSystemTime(new Date('2026-02-11T09:00:00Z'));
+    vi.setSystemTime(new Date('2026-02-11T23:55:00Z'));
 
     const token = await registerAndLogin(`ai-limit-${Date.now()}@example.com`);
 
@@ -197,7 +197,7 @@ describe('free-tier quotas', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(10);
 
-    vi.setSystemTime(new Date('2026-02-12T00:05:00Z'));
+    vi.setSystemTime(new Date('2026-02-12T00:01:00Z'));
 
     await request(app)
       .post('/api/ai/resume-analysis')
