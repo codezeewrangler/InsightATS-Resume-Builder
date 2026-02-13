@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install API deps
+        run: npm install
+        working-directory: apps/api
+      - name: Lint API
+        run: npm run lint
+        working-directory: apps/api
+      - name: Install Web deps
+        run: npm install
+        working-directory: apps/web
+      - name: Lint Web
+        run: npm run lint
+        working-directory: apps/web
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: resume
+          POSTGRES_PASSWORD: resume_dev
+          POSTGRES_DB: resume_dev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U resume"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install API deps
+        run: npm install
+        working-directory: apps/api
+      - name: Run migrations
+        run: npx prisma migrate deploy
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
+      - name: Run API tests
+        run: npm run test
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
+      - name: Run free-tier quota regression tests
+        run: npx vitest run tests/free-tier.test.ts
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://resume:resume_dev@localhost:5432/resume_dev
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install API deps
+        run: npm install
+        working-directory: apps/api
+      - name: Build API
+        run: npm run build
+        working-directory: apps/api
+      - name: Install Web deps
+        run: npm install
+        working-directory: apps/web
+      - name: Build Web
+        run: npm run build
+        working-directory: apps/web
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API Docker image
+        run: docker build -f apps/api/Dockerfile -t resume-api:ci .
+      - name: Build Web Docker image
+        run: docker build -f apps/web/Dockerfile -t resume-web:ci .
+      - name: Deploy Placeholder
+        run: echo "Deploy step placeholder"

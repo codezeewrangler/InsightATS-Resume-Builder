@@ -1,0 +1,13 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT = '4000';
+process.env.COLLAB_PORT = '4002';
+process.env.DATABASE_URL = 'postgresql://resume:resume_dev@localhost:5432/resume_dev';
+process.env.JWT_ACCESS_SECRET = 'test_access_secret_test_access_secret';
+process.env.JWT_REFRESH_SECRET = 'test_refresh_secret_test_refresh_secret';
+process.env.JWT_ACCESS_EXPIRES_IN = '15m';
+process.env.JWT_REFRESH_EXPIRES_IN = '7d';
+process.env.CORS_ORIGIN = 'http://localhost:3000';
+process.env.LOG_LEVEL = 'error';
+process.env.RATE_LIMIT_WINDOW_MS = '60000';
+process.env.RATE_LIMIT_MAX = '200';
+process.env.GROQ_API_KEY = 'test-groq-key';

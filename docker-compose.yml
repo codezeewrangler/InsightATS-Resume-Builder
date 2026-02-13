@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: resume_db
+    environment:
+      POSTGRES_USER: resume
+      POSTGRES_PASSWORD: resume_dev
+      POSTGRES_DB: resume_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: dev
+    container_name: resume_api
+    env_file:
+      - ./apps/api/.env
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: dev
+    container_name: resume_web
+    env_file:
+      - ./apps/web/.env
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+
+volumes:
+  db_data:

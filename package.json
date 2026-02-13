@@ -1,0 +1,35 @@
+{
+  "name": "resume-platform",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"npm run -w apps/api dev\" \"npm run -w apps/web dev\"",
+    "dev:api": "npm run -w apps/api dev",
+    "dev:web": "npm run -w apps/web dev",
+    "build": "npm run -w apps/api build && npm run -w apps/web build",
+    "lint": "npm run -w apps/api lint && npm run -w apps/web lint",
+    "test": "npm run -w apps/api test && npm run -w apps/web test",
+    "format": "prettier -w .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,css,md,json,yml,yaml}": [
+      "prettier -w"
+    ],
+    "apps/api/src/**/*.{ts,tsx}": [
+      "npm run -w apps/api lint"
+    ],
+    "apps/web/src/**/*.{ts,tsx}": [
+      "npm run -w apps/web lint"
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CollaboratorRole {
+  owner
+  editor
+  viewer
+}
+
+model User {
+  id           String              @id @default(uuid())
+  email        String              @unique
+  fullName     String?
+  passwordHash String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  refreshTokens  RefreshToken[]
+  resumes        Resume[]           @relation("UserResumes")
+  collaborations ResumeCollaborator[]
+  versions       ResumeVersion[]    @relation("UserVersions")
+  dailyUsage     DailyUsage[]
+}
+
+model Resume {
+  id          String               @id @default(uuid())
+  ownerId     String
+  owner       User                 @relation("UserResumes", fields: [ownerId], references: [id])
+  title       String
+  content     Json?
+  collabState Bytes?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  versions       ResumeVersion[]
+  collaborators ResumeCollaborator[]
+
+  @@index([ownerId])
+  @@index([updatedAt])
+}
+
+model ResumeVersion {
+  id           String   @id @default(uuid())
+  resumeId     String
+  resume       Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  content      Json
+  createdById  String?
+  createdBy    User?    @relation("UserVersions", fields: [createdById], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@unique([resumeId, versionNumber])
+  @@index([resumeId])
+}
+
+model ResumeCollaborator {
+  id        String           @id @default(uuid())
+  resumeId  String
+  userId    String
+  role      CollaboratorRole
+  createdAt DateTime         @default(now())
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, userId])
+  @@index([resumeId])
+  @@index([userId])
+}
+
+model RefreshToken {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash         String
+  createdAt         DateTime @default(now())
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  replacedByTokenId String?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model DailyUsage {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateUtc         DateTime
+  aiAnalysisCount Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, dateUtc])
+  @@index([dateUtc])
+}
