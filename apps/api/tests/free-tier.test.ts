@@ -134,7 +134,7 @@ describe('free-tier quotas', () => {
   });
 
   it('blocks 11th AI analysis in a UTC day and resets quota next day', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-02-11T09:00:00Z'));
 
     const token = await registerAndLogin(`ai-limit-${Date.now()}@example.com`);
@@ -202,7 +202,7 @@ describe('free-tier quotas', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ resumeText: 'Sample resume text' })
       .expect(200);
-  }, 15000);
+  });
 
   it('denies usage endpoint without auth and returns usage with auth', async () => {
     await request(app).get('/api/usage/free-tier').expect(401);
